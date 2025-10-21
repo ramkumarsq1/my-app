@@ -15,6 +15,9 @@ import plotly.express as px
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
+# Import authentication
+from auth import require_authentication, logout
+
 from config.config import (
     PAPER_TRADING, MAX_DAILY_LOSS, MAX_LOTS_PER_TRADE,
     TRADING_START_TIME, TRADING_END_TIME, KITE_ACCESS_TOKEN
@@ -339,6 +342,15 @@ def display_risk_monitor():
 def display_sidebar():
     """Display sidebar with controls"""
     with st.sidebar:
+        # User info and logout
+        if 'username' in st.session_state and st.session_state.username:
+            st.write(f"👤 **User:** {st.session_state.username}")
+
+        if st.button("🚪 Logout", use_container_width=True):
+            logout()
+
+        st.divider()
+
         st.header("⚙️ Controls")
 
         # Refresh button
@@ -368,6 +380,10 @@ def display_sidebar():
         if st.button("💾 Export Data", use_container_width=True):
             st.info("Database: data/trading.db")
 
+        if st.button("🔐 Change Password", use_container_width=True):
+            st.session_state.show_reset = True
+            st.rerun()
+
         st.divider()
 
         # Documentation links
@@ -378,6 +394,9 @@ def display_sidebar():
 
 def main():
     """Main dashboard function"""
+
+    # Require authentication
+    require_authentication()
 
     # Initialize components if not done
     if not st.session_state.initialized:
