@@ -48,6 +48,10 @@ numba==0.59.0                   # JIT compiler for numerical functions (optional
 # Backtesting (Optional)
 # backtesting==0.3.3            # Uncomment if you want dedicated backtesting library
 
+# Web Dashboard
+streamlit==1.29.0               # Web dashboard framework
+plotly==5.18.0                  # Interactive charts and graphs
+
 # Development Tools (Optional)
 # black==23.12.1                # Code formatter
 # flake8==7.0.0                 # Linting
