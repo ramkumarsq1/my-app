@@ -1,0 +1,54 @@
+# Core Trading Libraries
+kiteconnect==4.2.0              # Zerodha Kite Connect API
+pyotp==2.9.0                    # For 2FA authentication
+
+# Data Analysis & Manipulation
+pandas==2.1.4
+numpy==1.26.3
+pandas-ta==0.3.14b0             # Technical indicators (alternative to TA-Lib)
+
+# Database
+sqlalchemy==2.0.25              # ORM for database operations
+sqlite3                          # Built-in, for local database
+
+# Scheduling & Task Management
+APScheduler==3.10.4             # Advanced Python Scheduler
+schedule==1.2.1                 # Simple job scheduling
+
+# Notifications
+python-telegram-bot==20.7       # Telegram bot for alerts
+
+# API & Web
+requests==2.31.0                # HTTP library
+websocket-client==1.7.0         # WebSocket client for real-time data
+
+# Utilities
+python-dotenv==1.0.0            # Environment variable management
+pytz==2023.3                    # Timezone handling
+python-dateutil==2.8.2          # Date manipulation
+
+# Logging & Monitoring
+loguru==0.7.2                   # Advanced logging (alternative to built-in logging)
+
+# Configuration
+configparser==6.0.0             # Config file parsing
+pyyaml==6.0.1                   # YAML config support
+
+# Testing
+pytest==7.4.4                   # Testing framework
+pytest-cov==4.1.0               # Coverage plugin
+pytest-mock==3.12.0             # Mocking support
+
+# Data Validation
+pydantic==2.5.3                 # Data validation using Python type annotations
+
+# Performance
+numba==0.59.0                   # JIT compiler for numerical functions (optional)
+
+# Backtesting (Optional)
+# backtesting==0.3.3            # Uncomment if you want dedicated backtesting library
+
+# Development Tools (Optional)
+# black==23.12.1                # Code formatter
+# flake8==7.0.0                 # Linting
+# mypy==1.8.0                   # Static type checking

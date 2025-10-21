@@ -1,0 +1,94 @@
+# =============================================================================
+# NIFTY OPTIONS TRADING PLATFORM - CONFIGURATION TEMPLATE
+# =============================================================================
+# Copy this file to 'config.ini' and fill in your actual values
+# NEVER commit config.ini to version control (it's in .gitignore)
+# =============================================================================
+
+[kite]
+# Zerodha Kite Connect API Credentials
+# Get your API key from: https://developers.kite.trade/
+api_key = YOUR_API_KEY_HERE
+api_secret = YOUR_API_SECRET_HERE
+access_token =
+user_id = YOUR_ZERODHA_CLIENT_ID
+password =
+totp_secret = YOUR_TOTP_SECRET_FOR_2FA
+
+[trading]
+# Trading Parameters
+symbol = NIFTY
+exchange = NFO
+product_type = MIS
+order_type = MARKET
+lot_size = 50
+max_lots_per_trade = 2
+max_open_positions = 3
+
+[risk]
+# Risk Management (in INR)
+max_loss_per_trade = 5000
+max_daily_loss = 15000
+max_consecutive_losses = 3
+stop_loss_percentage = 40
+target_percentage = 60
+max_margin_utilization = 50
+cooloff_period_minutes = 30
+
+[trading_hours]
+# Trading Hours (IST - 24-hour format)
+market_open = 09:15
+trading_start = 09:20
+trading_end = 15:20
+market_close = 15:30
+force_exit = 15:25
+timezone = Asia/Kolkata
+
+[options]
+# Options Parameters
+strike_interval = 50
+atm_strike_range = 3
+preferred_option_type = BOTH
+min_option_volume = 10000
+min_open_interest = 0
+
+[database]
+# Database Configuration
+type = sqlite
+path = data/trading.db
+backup_enabled = true
+
+[telegram]
+# Telegram Bot Configuration
+enabled = false
+bot_token = YOUR_TELEGRAM_BOT_TOKEN
+chat_id = YOUR_TELEGRAM_CHAT_ID
+alerts_enabled = true
+
+[logging]
+# Logging Configuration
+level = INFO
+dir = logs
+file_size_mb = 10
+backup_count = 5
+console = true
+
+[strategy]
+# Strategy Configuration
+name = SimpleStrategy
+enabled = true
+backtesting = false
+
+[api]
+# API Rate Limiting
+rate_limit = 3
+timeout = 7
+retry_count = 3
+retry_delay = 1
+
+[safety]
+# Safety Switches - IMPORTANT!
+paper_trading = true
+trade_on_expiry = false
+require_confirmation = false
+auto_square_off = true
