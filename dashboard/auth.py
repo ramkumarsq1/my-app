@@ -6,6 +6,7 @@ Simple but secure login system
 import streamlit as st
 import hashlib
 import json
+import time
 from pathlib import Path
 
 # Default credentials (should be changed by user)
@@ -23,15 +24,22 @@ def load_credentials():
     if creds_file.exists():
         try:
             with open(creds_file, 'r') as f:
-                return json.load(f)
-        except:
+                creds = json.load(f)
+                # Debug: Show what was loaded (remove in production)
+                st.sidebar.write(f"Debug: Loaded credentials for user: {creds.get('username', 'N/A')}")
+                return creds
+        except Exception as e:
+            st.error(f"Error loading credentials: {e}")
             pass
 
     # Return default credentials
-    return {
+    default_creds = {
         "username": DEFAULT_USERNAME,
         "password_hash": hash_password(DEFAULT_PASSWORD)
     }
+    # Debug info
+    st.sidebar.write(f"Debug: Using default credentials (admin/admin123)")
+    return default_creds
 
 def save_credentials(username: str, password: str):
     """Save new credentials to file"""
@@ -42,17 +50,40 @@ def save_credentials(username: str, password: str):
         "password_hash": hash_password(password)
     }
 
-    with open(creds_file, 'w') as f:
-        json.dump(credentials, f)
+    try:
+        with open(creds_file, 'w') as f:
+            json.dump(credentials, f)
+        st.success(f"Credentials saved to {creds_file}")
+    except Exception as e:
+        st.error(f"Error saving credentials: {e}")
 
 def check_password(username: str, password: str) -> bool:
     """Verify username and password"""
-    creds = load_credentials()
+    try:
+        creds = load_credentials()
 
-    if username != creds["username"]:
+        # Debug information (remove in production)
+        st.sidebar.write(f"Debug: Checking username: '{username}'")
+        st.sidebar.write(f"Debug: Expected username: '{creds.get('username', '')}'")
+        st.sidebar.write(f"Debug: Username match: {username == creds.get('username', '')}")
+
+        if username != creds["username"]:
+            st.error(f"Username mismatch: '{username}' != '{creds['username']}'")
+            return False
+
+        input_hash = hash_password(password)
+        expected_hash = creds["password_hash"]
+
+        # Debug password hash comparison
+        st.sidebar.write(f"Debug: Input hash: {input_hash[:10]}...")
+        st.sidebar.write(f"Debug: Expected hash: {expected_hash[:10]}...")
+        st.sidebar.write(f"Debug: Password match: {input_hash == expected_hash}")
+
+        return input_hash == expected_hash
+
+    except Exception as e:
+        st.error(f"Error checking password: {e}")
         return False
-
-    return hash_password(password) == creds["password_hash"]
 
 def login_page():
     """Display login page"""
@@ -70,20 +101,34 @@ def login_page():
         with st.container():
             st.markdown("---")
 
-            username = st.text_input("Username", key="username")
-            password = st.text_input("Password", type="password", key="password")
+            # Show debug info
+            with st.expander("🔧 Debug Info (click to expand)"):
+                st.write("**Default Credentials:**")
+                st.code(f"Username: {DEFAULT_USERNAME}\nPassword: {DEFAULT_PASSWORD}")
+
+                creds = load_credentials()
+                st.write("**Current Stored Credentials:**")
+                st.write(f"Username: {creds.get('username', 'N/A')}")
+                st.write(f"Password Hash: {creds.get('password_hash', 'N/A')[:20]}...")
+
+            username = st.text_input("Username", key="username", value="")
+            password = st.text_input("Password", type="password", key="password", value="")
 
             col_a, col_b = st.columns(2)
 
             with col_a:
                 if st.button("Login", type="primary", use_container_width=True):
-                    if check_password(username, password):
+                    if not username or not password:
+                        st.error("Please enter both username and password")
+                    elif check_password(username, password):
                         st.session_state.authenticated = True
                         st.session_state.username = username
                         st.success("✅ Login successful!")
+                        time.sleep(1)
                         st.rerun()
                     else:
                         st.error("❌ Invalid username or password")
+                        st.info("💡 Try default credentials: admin / admin123")
 
             with col_b:
                 if st.button("Reset Password", use_container_width=True):
@@ -95,6 +140,18 @@ def login_page():
             # Default credentials warning
             st.warning("⚠️ **Default credentials:** admin / admin123")
             st.info("💡 Change password after first login using Settings")
+
+            # Quick reset button for testing
+            if st.button("🔄 Reset to Default Credentials", help="Delete saved credentials and use defaults"):
+                creds_file = Path(__file__).parent / "credentials.json"
+                if creds_file.exists():
+                    creds_file.unlink()
+                    st.success("✅ Credentials reset to defaults!")
+                    st.info("Use: admin / admin123")
+                    time.sleep(1)
+                    st.rerun()
+                else:
+                    st.info("Already using default credentials")
 
 def reset_password_page():
     """Display password reset page"""
